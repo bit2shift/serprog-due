@@ -206,4 +206,5 @@ void loop()
 {
   byte op = get_chr();
   if(cmd[op])cmd[op]();
+  else put_chr(S_NAK);
 }
