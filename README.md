@@ -7,4 +7,4 @@ Yet I lacked any female jumper cables, since it has the SPI pins on the ICSP hea
 
 The full v1 protocol specification is detailed in `serprog-protocol.txt`
 
-Use this with [flashrom](https://www.flashrom.org/Downloads), following [these instructions](https://www.flashrom.org/Serprog/Arduino_flasher).
+Use this with [flashrom](https://www.flashrom.org/Downloads), following [these instructions](https://www.flashrom.org/Serprog/Arduino_flasher#Running_flashrom).
