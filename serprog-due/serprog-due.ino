@@ -1,5 +1,5 @@
 /*
- * Serprog for Arduino Due using software SPI
+ * Serprog for Arduino Due using hardware SPI
  * Use a Pomona SOIC-8 clip to program a soldered serial flash
  *
  * SOP8 clip pinout
@@ -44,4 +44,3 @@ void loop()
 {
   sp.loop();
 }
-

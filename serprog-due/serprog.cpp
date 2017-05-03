@@ -38,7 +38,7 @@ void serprog::map()
   std::bitset<32> bits;
   for(auto& cmd : cmds)
   {
-    int i = ((&cmd - &cmds[0]) % bits.size());
+    int i = ((&cmd - cmds) % bits.size());
     bits.set(i, cmd);
     if(i == (bits.size() - 1))
       write(out, bits.to_ulong());
@@ -83,7 +83,7 @@ void serprog::op()
   unsigned slen = 0;
   if(!read(in, slen, 3))
     return nak();
-  
+
   unsigned rlen = 0;
   if(!read(in, rlen, 3))
     return nak();
@@ -116,7 +116,7 @@ void serprog::freq()
   {
     freq = constrain(freq, 4e6, F_CPU);
     cfg = {unsigned(freq), MSBFIRST, SPI_MODE0};
-    
+
     ack();
     write(out, freq);
   }
@@ -124,3 +124,14 @@ void serprog::freq()
     nak();
 }
 
+void serprog::loop()
+{
+  if(in.available())
+  {
+    char op = in.read();
+    if(cmds[op])
+      (this->*cmds[op])();
+    else
+      nak();
+  }
+}
