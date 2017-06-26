@@ -111,11 +111,11 @@ void serprog::op()
 
 void serprog::freq()
 {
-  unsigned freq = 0;
+  unsigned freq;
   if(read(in, freq) && freq)
   {
     freq = constrain(freq, 4e6, F_CPU);
-    cfg = {unsigned(freq), MSBFIRST, SPI_MODE0};
+    cfg = {freq, MSBFIRST, SPI_MODE0};
 
     ack();
     write(out, freq);
