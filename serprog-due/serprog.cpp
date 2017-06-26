@@ -1,11 +1,12 @@
 #include "serprog.hpp"
 
-#include <bitset>
+#include <stddef.h>
+#include <stdint.h>
 
 static const char NAME[16] = "serprog-due";
 
 template<typename I>
-inline bool read(Stream& s, I& i, unsigned n = sizeof(I))
+inline bool read(Stream& s, I& i, size_t n = sizeof(I))
 {
   return (s.readBytes(reinterpret_cast<char*>(&i), n) == n);
 }
@@ -29,19 +30,19 @@ void serprog::nak()
 void serprog::version()
 {
   ack();
-  write(out, short(1));
+  write(out, uint16_t(1));
 }
 
 void serprog::map()
 {
   ack();
-  std::bitset<32> bits;
+  uint32_t bits = 0;
   for(auto& cmd : cmds)
   {
-    int i = ((&cmd - cmds) % bits.size());
-    bits.set(i, cmd);
-    if(i == (bits.size() - 1))
-      write(out, bits.to_ulong());
+    int i = ((&cmd - cmds) & 31);
+    bitWrite(bits, i, cmd);
+    if(i == 31)
+      write(out, bits);
   }
 }
 
@@ -54,7 +55,7 @@ void serprog::name()
 void serprog::size()
 {
   ack();
-  write(out, short(256));
+  write(out, uint16_t(256));
 }
 
 void serprog::gbus()
@@ -80,11 +81,11 @@ void serprog::sbus()
 
 void serprog::op()
 {
-  unsigned slen = 0;
+  uint32_t slen = 0;
   if(!read(in, slen, 3))
     return nak();
 
-  unsigned rlen = 0;
+  uint32_t rlen = 0;
   if(!read(in, rlen, 3))
     return nak();
 
@@ -111,7 +112,7 @@ void serprog::op()
 
 void serprog::freq()
 {
-  unsigned freq;
+  uint32_t freq;
   if(read(in, freq) && freq)
   {
     freq = constrain(freq, 4e6, F_CPU);
