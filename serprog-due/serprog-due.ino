@@ -31,14 +31,14 @@
  * 0x14 (Set SPI frequency)
  */
 
+//Change serial port and CS pin number accordingly
+serprog sp(SerialUSB, 52);
+
 void setup()
 {
   SerialUSB.begin(0);
-  pinMode(52, OUTPUT);
-  SPI.begin();
+  sp.setup();
 }
-
-serprog sp(SerialUSB);
 
 void loop()
 {

@@ -8,6 +8,7 @@ class serprog
   Stream& in;
   Print& out;
   SPISettings cfg;
+  int cs;
 
   void(serprog::* cmds[256])()
   {
@@ -51,7 +52,8 @@ class serprog
 
 public:
   template<typename T>
-  serprog(T&& t) : in(t), out(t), cfg() {}
+  serprog(T& t, int pin) : in(t), out(t), cfg(), cs(pin) {}
 
+  void setup();
   void loop();
 };

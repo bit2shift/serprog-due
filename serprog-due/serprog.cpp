@@ -89,8 +89,23 @@ void serprog::op()
   if(!read(in, rlen, 3))
     return nak();
 
-  SPI.beginTransaction(cfg);
-  digitalWrite(52, LOW);
+  class guard_t
+  {
+    serprog& sp;
+
+  public:
+    guard_t(serprog* psp) : sp(*psp)
+    {
+      SPI.beginTransaction(sp.cfg);
+      digitalWrite(sp.cs, LOW);
+    }
+
+    ~guard_t()
+    {
+      digitalWrite(sp.cs, HIGH);
+      SPI.endTransaction();
+    }
+  } guard(this);
 
   while(slen--)
   {
@@ -105,9 +120,6 @@ void serprog::op()
 
   while(rlen--)
     out.write(SPI.transfer(0));
-
-  digitalWrite(52, HIGH);
-  SPI.endTransaction();
 }
 
 void serprog::freq()
@@ -123,6 +135,12 @@ void serprog::freq()
   }
   else
     nak();
+}
+
+void serprog::setup()
+{
+  pinMode(cs, OUTPUT);
+  SPI.begin();
 }
 
 void serprog::loop()
