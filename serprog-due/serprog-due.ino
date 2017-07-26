@@ -36,11 +36,11 @@ serprog sp(SerialUSB, 52);
 
 void setup()
 {
-  SerialUSB.begin(0);
-  sp.setup();
+	SerialUSB.begin(0);
+	sp.setup();
 }
 
 void loop()
 {
-  sp.loop();
+	sp.loop();
 }
