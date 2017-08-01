@@ -1,4 +1,4 @@
-# Serial Flasher Protocol Specification v1 for Arduino
+# Serial Flasher Protocol Specification v1 for Arduino Due
 This implementation ~~uses~~ used software SPI (bit banging).  
 It uses hardware SPI through the ICSP header, since commit 2f98c47.
 
