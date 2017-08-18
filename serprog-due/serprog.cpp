@@ -42,13 +42,15 @@ void serprog::version()
 void serprog::map()
 {
 	ack();
-	uint32_t bits = 0;
-	for(uint8_t i = 0; i < length(cmds); i++)
-		bitWrite(bits, i, cmds[i]);
-
-	write(out, bits);
-	for(uint8_t i = 0; i < 7; i++)
-		write(out, uint32_t(0));
+	uint8_t i = 0;
+	uint8_t bits = 0;
+	do
+	{
+		bitWrite(bits, (i & 7), ((i < length(cmds)) && cmds[i]));
+		if(!(++i & 7))
+			out.write(bits);
+	}
+	while(i);
 }
 
 void serprog::name()
@@ -110,7 +112,7 @@ void serprog::op()
 			digitalWrite(sp.cs, HIGH);
 			SPI.endTransaction();
 		}
-	} guard(this);
+	} guard{this};
 
 	while(slen--)
 	{
