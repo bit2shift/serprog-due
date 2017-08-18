@@ -47,10 +47,10 @@ void serprog::map()
 	do
 	{
 		bitWrite(bits, (i & 7), ((i < length(cmds)) && cmds[i]));
-		if(!(++i & 7))
+		if(!(~i & 7))
 			out.write(bits);
 	}
-	while(i);
+	while(++i);
 }
 
 void serprog::name()
