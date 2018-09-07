@@ -10,7 +10,7 @@ class serprog
 	SPISettings cfg;
 	int cs;
 
-	void (serprog::* cmds[32])()
+	void (serprog::* cmds[22])()
 	{
 		&serprog::ack,     /* 0x00 */
 		&serprog::version, /* 0x01 */
@@ -34,7 +34,6 @@ class serprog
 		&serprog::op,      /* 0x13 */
 		&serprog::freq,    /* 0x14 */
 		nullptr            /* 0x15 */
-		/* nullptr (default)  0x?? */
 	};
 
 	void ack();
