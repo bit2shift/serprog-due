@@ -1,8 +1,8 @@
 /*
- * Serprog for Arduino Due using hardware SPI
+ * Serprog for Arduino Due using hardware SPI (CS on pin 52 by default, see below)
  * Use a Pomona SOIC-8 clip to program a soldered serial flash
  *
- * SOP8 clip pinout
+ * SOP8 clip pinout (Winbond 25Q64FV)
  * 1 -- /CS     (CS)
  * 2 -- DO      (MISO)
  * 3 -- /WP     (pull-up)
@@ -31,7 +31,7 @@
  * 0x14 (Set SPI frequency)
  */
 
-//Change serial port and CS pin number accordingly
+//Change serial port and CS pin if using a different Arduino
 serprog sp(SerialUSB, 52);
 
 void setup()
