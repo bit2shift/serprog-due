@@ -5,8 +5,7 @@
 
 class serprog
 {
-	Stream& in;
-	Print& out;
+	Stream& ios;
 	SPISettings cfg;
 	int cs;
 
@@ -50,8 +49,7 @@ class serprog
 	void freq();
 
 public:
-	template<typename T>
-	serprog(T& t, int pin) : in(t), out(t), cfg(), cs(pin) {}
+	serprog(Stream& s, int pin) : ios(s), cfg(), cs(pin) {}
 
 	void setup();
 	void loop();

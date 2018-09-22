@@ -25,18 +25,18 @@ constexpr size_t length(const T (&)[N]) noexcept
 
 void serprog::ack()
 {
-	out.write(0x06);
+	ios.write(0x06);
 }
 
 void serprog::nak()
 {
-	out.write(0x15);
+	ios.write(0x15);
 }
 
 void serprog::version()
 {
 	ack();
-	write(out, uint16_t(1));
+	write(ios, uint16_t(1));
 }
 
 void serprog::map()
@@ -48,7 +48,7 @@ void serprog::map()
 	{
 		bitWrite(bits, (i & 7), ((i < length(cmds)) && cmds[i]));
 		if(!(~i & 7))
-			out.write(bits);
+			ios.write(bits);
 	}
 	while(++i);
 }
@@ -56,19 +56,19 @@ void serprog::map()
 void serprog::name()
 {
 	ack();
-	out.write(NAME, sizeof(NAME));
+	ios.write(NAME, sizeof(NAME));
 }
 
 void serprog::size()
 {
 	ack();
-	write(out, uint16_t(256));
+	write(ios, uint16_t(256));
 }
 
 void serprog::gbus()
 {
 	ack();
-	out.write(8);
+	ios.write(8);
 }
 
 void serprog::sync()
@@ -80,7 +80,7 @@ void serprog::sync()
 void serprog::sbus()
 {
 	uint8_t bus;
-	if(read(in, bus) && (bus == 8))
+	if(read(ios, bus) && (bus == 8))
 		ack();
 	else
 		nak();
@@ -89,11 +89,11 @@ void serprog::sbus()
 void serprog::op()
 {
 	uint32_t slen = 0;
-	if(!read(in, slen, 3))
+	if(!read(ios, slen, 3))
 		return nak();
 
 	uint32_t rlen = 0;
-	if(!read(in, rlen, 3))
+	if(!read(ios, rlen, 3))
 		return nak();
 
 	class guard_t
@@ -117,7 +117,7 @@ void serprog::op()
 	while(slen--)
 	{
 		uint8_t c;
-		if(read(in, c))
+		if(read(ios, c))
 			SPI.transfer(c);
 		else
 			return nak();
@@ -126,19 +126,19 @@ void serprog::op()
 	ack();
 
 	while(rlen--)
-		out.write(SPI.transfer(0));
+		ios.write(SPI.transfer(0));
 }
 
 void serprog::freq()
 {
 	uint32_t freq;
-	if(read(in, freq) && freq)
+	if(read(ios, freq) && freq)
 	{
 		freq = constrain(freq, 4e6, F_CPU);
 		cfg = {freq, MSBFIRST, SPI_MODE0};
 
 		ack();
-		write(out, freq);
+		write(ios, freq);
 	}
 	else
 		nak();
@@ -152,9 +152,9 @@ void serprog::setup()
 
 void serprog::loop()
 {
-	if(in.available())
+	if(ios.available())
 	{
-		uint8_t op = in.read();
+		uint8_t op = ios.read();
 		if((op < length(cmds)) && cmds[op])
 			(this->*cmds[op])();
 		else
