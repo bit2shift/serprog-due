@@ -18,9 +18,9 @@ inline void write(Print& p, I i)
 }
 
 template<typename T, size_t N>
-constexpr size_t length(const T (&)[N]) noexcept
+constexpr T get_or_default(T (&array)[N], size_t index) noexcept
 {
-	return N;
+	return (index < N) ? array[index] : T();
 }
 
 void serprog::ack()
@@ -46,7 +46,7 @@ void serprog::map()
 	uint8_t bits = 0;
 	do
 	{
-		bitWrite(bits, (i & 7), ((i < length(cmds)) && cmds[i]));
+		bitWrite(bits, (i & 7), get_or_default(cmds, i));
 		if(!(~i & 7))
 			ios.write(bits);
 	}
@@ -154,9 +154,8 @@ void serprog::loop()
 {
 	if(ios.available())
 	{
-		uint8_t op = ios.read();
-		if((op < length(cmds)) && cmds[op])
-			(this->*cmds[op])();
+		if(auto op = get_or_default(cmds, ios.read()))
+			(this->*op)();
 		else
 			nak();
 	}
